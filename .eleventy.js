@@ -112,6 +112,10 @@ module.exports = function (eleventyConfig, options) {
 		"timeline-json",
 		path.join(pluginLayoutPath, "json/timeline.njk")
 	);
+	eleventyConfig.addLayoutAlias(
+		"timeline-wrapper",
+		path.join(pluginLayoutPath, "timeline-wrapper.njk")
+	);
 	eleventyConfig.addGlobalData("timelinesConfig", pluginConfig);
 	eleventyConfig.addFilter("makeISODate", function (value) {
 		return new Date(value).toISOString();
