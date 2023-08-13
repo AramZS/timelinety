@@ -94,6 +94,14 @@ const prepareObject = function (dataObject, size, domainName) {
 	} else {
 		dataObj = { data: dataObject };
 	}
+	const previewsFolder = path.join(
+		__dirname,
+		"../../../../",
+		`/src/img/previews/`
+	);
+	if (!fs.existsSync(previewsFolder)) {
+		fs.mkdirSync(previewsFolder);
+	}
 	let cacheFile = path.join(
 		__dirname,
 		"../../../../",
@@ -194,6 +202,7 @@ function generateSomeImages(imageSet) {
 		console.log(`Image sub array of ${imageSet.length} ready to process`);
 		const imagesToCreate = [];
 		imageSet.forEach((imgObject) => {
+			// RECREATE_IMGS should be false to prevent recreating images right? What did I make it true?
 			if (fs.existsSync(imgObject.output) && process.env.RECREATE_IMGS) {
 				// Only create the images that don't already exist.
 				console.log("File already exists", imgObject.output);
