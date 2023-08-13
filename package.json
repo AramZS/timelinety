@@ -1,6 +1,6 @@
 {
 	"name": "timelinety",
-	"version": "0.5.1",
+	"version": "0.5.2",
 	"description": "A plugin to create timelines with 11ty",
 	"main": ".eleventy.js",
 	"scripts": {
