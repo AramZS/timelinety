@@ -1,7 +1,7 @@
 {
-	"name": "Timelinety",
+	"name": "timelinety",
 	"version": "0.5.1",
-	"description": "A plugin to create timelines",
+	"description": "A plugin to create timelines with 11ty",
 	"main": ".eleventy.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
