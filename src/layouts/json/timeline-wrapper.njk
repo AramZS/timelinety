@@ -12,13 +12,13 @@
     "items": [
         {% for entry in collections[timelineSlug] %}
             {
-                "title": "{{- entry.data.title }}",
+                "title": {{- entry.data.title | dump | safe }},
                 "slug": "{{- entry.data.title | timelineSlugify -}}",
                 "date": "{{ entry.data.date }}",
                 "humanReadableDate": "{% humanizeDate entry.data.date %}",
                 "faicon": "{{ entry.data.faicon }}",
                 "color": "{{ entry.data.color }}",
-                "content": {% if entry.data and entry.data.content %}{{ entry.data.content | dump | safe }}{% else %}false{%- endif %},
+                "content": {% if entry.data and entry.data.content %}{{ entry.data.content | dump | safe or "" }}{% endif %},
                 "isBasedOn": {%- if entry.data.isBasedOn and entry.data.customLink %}"{{entry.data.customLink}}"{% else %}false{%- endif %},
                 "page": {
                     "url": {%- if entry.data.page and entry.data.page.url %}"{{entry.data.page.url}}"{% else %}false{%- endif %}

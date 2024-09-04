@@ -12,7 +12,7 @@ const imageSlugMaker = slugger;
 const imageUrlMaker = (domainName, title) => {
 	return {
 		standard: `${domainName}/img/previews/${imageSlugMaker(
-			title
+			title,
 		)}-600px.png`,
 		tall: `${domainName}/img/previews/${imageSlugMaker(title)}-630px.png`,
 	};
@@ -97,7 +97,7 @@ const prepareObject = function (dataObject, size, domainName) {
 	const previewsFolder = path.join(
 		__dirname,
 		"../../../../",
-		`/src/img/previews/`
+		`/src/img/previews/`,
 	);
 	if (!fs.existsSync(previewsFolder)) {
 		fs.mkdirSync(previewsFolder);
@@ -106,14 +106,14 @@ const prepareObject = function (dataObject, size, domainName) {
 		__dirname,
 		"../../../../",
 		`/src/img/previews/`,
-		`${imageSlugMaker(dataObject.title)}-${size}.png`
+		`${imageSlugMaker(dataObject.title)}-${size}.png`,
 	);
 	/**
 	cacheFile = `./previews/${imageSlugMaker(
 		sanitizeFilename(dataObject.title)
 	)}-${size}.png`; */
 	dataObj.data.titleslug = imageSlugMaker(
-		dataObj.title || dataObj.data.title
+		dataObj.title || dataObj.data.title,
 	);
 	dataObj.data.color = dataObj.data.color || "grey";
 	dataObj.data.humanData = humanizeDate(dataObj.data.date);
@@ -124,7 +124,7 @@ const prepareObject = function (dataObject, size, domainName) {
 			output: cacheFile,
 			timeout: 0,
 		},
-		dataObj.data
+		dataObj.data,
 	);
 	return finalObj;
 };
@@ -168,14 +168,14 @@ const timelineElementStyle = (doc) => {
 		{
 			encoding: "utf8",
 			flag: "r",
-		}
+		},
 	);
 	const cssTwo = fs.readFileSync(
 		"./_custom-plugins/timelinety/src/css/main.css",
 		{
 			encoding: "utf8",
 			flag: "r",
-		}
+		},
 	);
 
 	const cssThree = fs.readFileSync(
@@ -183,7 +183,7 @@ const timelineElementStyle = (doc) => {
 		{
 			encoding: "utf8",
 			flag: "r",
-		}
+		},
 	);
 
 	let cssText = cssOne + "\n\n" + cssTwo + "\n\n" + cssThree;
@@ -202,8 +202,10 @@ function generateSomeImages(imageSet) {
 		console.log(`Image sub array of ${imageSet.length} ready to process`);
 		const imagesToCreate = [];
 		imageSet.forEach((imgObject) => {
-			// RECREATE_IMGS should be false to prevent recreating images right? What did I make it true?
-			if (fs.existsSync(imgObject.output) && process.env.RECREATE_IMGS) {
+			if (
+				fs.existsSync(imgObject.output) &&
+				process.env.RECREATE_IMGS !== "true"
+			) {
 				// Only create the images that don't already exist.
 				console.log("File already exists", imgObject.output);
 			} else {
@@ -226,7 +228,7 @@ function generateSomeImages(imageSet) {
 				.catch((error) => {
 					console.log(
 						"The images were not created successfully!",
-						error
+						error,
 					);
 					reject(error);
 				});
@@ -265,7 +267,7 @@ const queueImagesProcess = (timelineImages) => {
 					prev.then(() => {
 						return generateSomeImages(cur);
 					}),
-				generateSomeImages(firstChunk)
+				generateSomeImages(firstChunk),
 			);
 			return promiseChain
 				.then(() => {

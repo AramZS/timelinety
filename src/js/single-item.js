@@ -22,17 +22,39 @@ class TimelineItem extends HTMLElement {
 	elBuilder(data) {
 		console.log("Set data ", data);
 		this.setAttribute("data-tags", data.tags.join(","));
+		let tagIslugs = data.tags
+			.filter((i) => i)
+			.reduce((a, c) => {
+				return `${a} fa-i-${c
+					.replace(/[^\w\s$*_+~.()'"!\-:@]+/g, "")
+					.replace(/[^A-Za-z0-9\s]/g, "")
+					.trim()
+					.replace(/\s+/g, "-")
+					.toLowerCase()}`;
+			}, "");
+		let tagICslugs = data.tags
+			.filter((i) => i)
+			.reduce((a, c) => {
+				return `${a} fa-ic-${c
+					.replace(/[^\w\s$*_+~.()'"!\-:@]+/g, "")
+					.replace(/[^A-Za-z0-9\s]/g, "")
+					.trim()
+					.replace(/\s+/g, "-")
+					.toLowerCase()}`;
+			}, "");
 		let timelineIcon = h(
 			"div",
 			{
-				class: `timeline-icon ${data.color}`,
+				class: `timeline-icon ${data.color} ${tagICslugs}`,
 			},
-			data?.faicon
+			data?.faicon || tagIslugs
 				? h("i", {
-						class: `fas fa-${data.faicon}`,
+						class: `fas fa-${
+							data.faicon ? data.faicon : "fa-i-basic"
+						} ${tagIslugs}`,
 						"aria-hidden": "true",
-				  })
-				: null
+					})
+				: null,
 		);
 		if (data.color) timelineIcon.classList.add(data.color);
 		this.appendChild(timelineIcon);
@@ -45,7 +67,7 @@ class TimelineItem extends HTMLElement {
 			h(
 				"span",
 				{ class: "timestamp" },
-				h("time", { datetime: data.date }, data.humanReadableDate)
+				h("time", { datetime: data.date }, data.humanReadableDate),
 			),
 			h(
 				"h2",
@@ -60,9 +82,9 @@ class TimelineItem extends HTMLElement {
 							location.host +
 							data.page.url,
 					},
-					h("i", { class: "fas fa-link" })
+					h("i", { class: "fas fa-link" }),
 				),
-				data.title
+				data.title,
 			),
 			data.image
 				? h(
@@ -74,17 +96,17 @@ class TimelineItem extends HTMLElement {
 							h("img", {
 								src: data.image.src,
 								alt: data.image.alt,
-							})
+							}),
 						),
-						h("span", { class: "caption" }, data.image.caption)
-				  )
+						h("span", { class: "caption" }, data.image.caption),
+					)
 				: null,
 			data.isBasedOn && data.customLink
 				? h(
 						"a",
 						{ target: "_blank", href: "data.customLink" },
-						"Read the article"
-				  )
+						"Read the article",
+					)
 				: null,
 			h("span", { class: "inner-description" }),
 			data?.links.length
@@ -104,16 +126,16 @@ class TimelineItem extends HTMLElement {
 												href: link.href,
 												target: "_blank",
 											},
-											link.linkText
+											link.linkText,
 										),
-										` ` + link.extraText
-									)
+										` ` + link.extraText,
+									),
 								);
 							});
 							return lis;
-						})()
-				  )
-				: null
+						})(),
+					)
+				: null,
 		);
 		this.appendChild(timelineDescription);
 		let innerContent = this.querySelector(".inner-description");
@@ -137,7 +159,7 @@ customElements.define("timeline-item", TimelineItem);
 
 function reflowEntries() {
 	var entries = document.querySelectorAll(
-		'.timeline-entry[aria-hidden="false"]'
+		'.timeline-entry[aria-hidden="false"]',
 	);
 	for (var i = 0; i < entries.length; i++) {
 		var entry = entries[i];
@@ -153,6 +175,33 @@ function reflowEntries() {
 	}
 }
 
+function resetURLOnScroll() {
+	// Step 1: Function to check if the URL is three path levels deep
+	let path = window.location.pathname;
+	// Remove leading and trailing slashes and split the path
+	const segments = path.replace(/^\/|\/$/g, "").split("/");
+
+	function isThreePathLevelsDeep() {
+		return segments.length === 3;
+	}
+
+	// Step 2: Function to change the URL on scroll
+	function changeUrlOnScroll() {
+		if (isThreePathLevelsDeep()) {
+			// Example of changing the URL, you can customize the path as needed
+			const newPath = `/${segments[0]}/${segments[1]}/`;
+			window.history.pushState({}, "", newPath); // I don't think I want to do this.
+			document.removeEventListener("scrollend", changeUrlOnScroll);
+		}
+	}
+
+	if (isThreePathLevelsDeep()) {
+		console.log("On timeline item");
+		// Attach the scroll event listener to the window
+		window.addEventListener("scrollend", changeUrlOnScroll);
+	}
+}
+
 function singleItemPageFill() {
 	/* We have JS! */
 	console.log("onload trigger");
@@ -164,13 +213,20 @@ function singleItemPageFill() {
 	container.prepend(...window.timelinePrepends);
 	homeItem.scrollIntoView();
 	container.append(...window.timelineAppends);
-	homeItem.scrollIntoView();
+	homeItem.scrollIntoView(true);
 	homeItem.querySelector(".timeline-description").style.border =
 		"2px solid var(--border-base)";
 	console.log("Build complete");
 	reflowEntries();
+	homeItem.scrollIntoView({ behavior: "instant", block: "start" });
 	// Clean up
 	document.removeEventListener("DOMContentLoaded", singleItemPageFill);
+
+	homeItem.scrollIntoView({ behavior: "instant", block: "start" });
+	setTimeout(() => {
+		homeItem.scrollIntoView({ behavior: "instant", block: "start" });
+	}, 1000);
+	setTimeout(resetURLOnScroll, 5000);
 }
 
 let preload = () => {
@@ -204,7 +260,7 @@ let preload = () => {
 			} else {
 				document.addEventListener(
 					"DOMContentLoaded",
-					singleItemPageFill
+					singleItemPageFill,
 				);
 			}
 		});

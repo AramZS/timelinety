@@ -13,7 +13,8 @@ body {
 	font-family: "Hind Vadodara", sans-serif;
 }
 
-h1 {
+h1,
+header.page-header h1 > a {
 	font-family: "Roboto Slab", serif;
 	margin-top: 0;
 	color: #ffffff;
@@ -25,6 +26,11 @@ a {
 }
 a:hover,
 a:focus {
+	text-decoration: underline;
+}
+
+header.page-header.timeline-header p > a {
+	color: #d7f0ff;
 	text-decoration: underline;
 }
 
@@ -248,6 +254,13 @@ footer.page-footer {
 	background-color: #999999;
 }
 
+.timeline-icon i {
+	width: 30px;
+	height: 30px;
+	margin-top: 5px;
+	background-size: contain;
+}
+
 /* RESPONSIVENESS */
 @media only screen and (min-width: 769px) {
 	.timeline-entry.even .timeline-description:after {
@@ -334,6 +347,7 @@ footer.page-footer {
 	}
 	body,
 	h1,
+	header.page-header h1 > a,
 	header.page-header p,
 	footer.page-footer p,
 	.timeline-description,
