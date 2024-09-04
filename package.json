@@ -8,7 +8,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/AramZS/eleventy-plugin-timelinety.git"
+		"url": "git+https://github.com/AramZS/timelinety.git"
 	},
 	"keywords": [
 		"11ty",
